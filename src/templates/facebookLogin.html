@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block title %}English Subtitled Admin: Login{% endblock %}
+{% block content %}
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = 'https://connect.facebook.net/pl_PL/sdk.js#xfbml=1&version=v3.1&appId=733670553423793&autoLogAppEvents=1';
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
+  function continueToPanel(){
+    FB.getLoginStatus(function(response) {
+      if (response.status === 'connected') {
+        document.cookie = "fbtoken=" + response.authResponse.accessToken;
+        window.history.back();
+      }
+    });
+  }
+</script>
+
+ <div class="fb-login-button" data-max-rows="3" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="true" onlogin="continueToPanel()"></div>
+{% endblock %}
