@@ -1,13 +1,12 @@
-import sys
 import re
+import sys
 
 import nltk
 import nltk.corpus as nc
 from nltk.stem.wordnet import WordNetLemmatizer
-from nltk.corpus import wordnet
 
-count_words_to_translate = {'v': 0, 'a': 0, 'r': 0, 'n': 0}
-count_words_translated = {'v': 0, 'a': 0, 'r': 0, 'n': 0}
+import translator
+import xml.etree.ElementTree as ET
 
 
 def main():
@@ -19,100 +18,77 @@ def main():
         sys.exit(0)
 
     sentences = parse_subtitles(file)
-    base_words = base_form(sentences)
-    words = remove_stop_words(base_words)
+    base_form_of_words = lemmatize_sentences(sentences)
+    words_to_translate = remove_stop_words(base_form_of_words)
 
-    # word, tag = words.pop()
-    # print("Word to translate to polish:")
-    # print(word)
-    # translated_word = translate(word, tag)
-    # print("Translations of the above word:")
-    # print(translated_word)
+    tree = ET.parse('plwordnet-4.0-visdisc.xml')
+    root = tree.getroot()
+    parent_map = {c: p for p in tree.iter() for c in p}
 
-    for word, tag in words:
-        translated_word = translate(word, tag)
-    print(count_words_to_translate)
-    print(count_words_translated)
+    for word, tag in words_to_translate:
+        translations = translator.translate_word(word, tag, root, parent_map)
+        print('word: {}, tag: {}, translations: '.format(word, tag), end='')
+        for translation in translations:
+            print(translation, end=', ')
+        print('')
 
 
 def parse_subtitles(file):
     text = file.read()
 
-    result = re.sub(r'\n\d+:\d+:\d+,\d+ --> \d+:\d+:\d+,\d+\n', '\n', text)
-    result = re.sub(r'[0-9]+\n', '', result)
-    result = re.sub(r'\n\n', '\n', result)
-    result = re.sub(r'<[a-zA-Z/]+>', '', result)
-    result = re.sub(r'\n', ' ', result)
-    result = re.sub(r' +', ' ', result).lower()
-    result = re.sub(r'^ ', '', result)
+    text = re.sub(r'\n\d+:\d+:\d+,\d+ --> \d+:\d+:\d+,\d+\n', '\n', text)
+    text = re.sub(r'[0-9]+\n', '', text)
+    text = re.sub(r'\n\n', '\n', text)
+    text = re.sub(r'<[a-zA-Z/]+>', '', text)
+    text = re.sub(r'\n', ' ', text)
+    text = re.sub(r' +', ' ', text).lower()
+    text = re.sub(r'^ ', '', text)
 
-    result = re.sub(r'\ufeff', '', result)  # what if different coding
+    text = re.sub(r'\ufeff', '', text)  # todo what if in file is other coding
 
-    result = re.sub(r'\? ', '?\n', result)
-    result = re.sub(r'! ', '!\n', result)
-    result = re.sub(r'\. ', '.\n', result)
-    result = re.sub(r'\.\.\. ', '...\n', result)
-    sentences = re.split(r'\n', result)
+    text = re.sub(r'\? ', '?\n', text)
+    text = re.sub(r'! ', '!\n', text)
+    text = re.sub(r'\. ', '.\n', text)
+    text = re.sub(r'\.\.\. ', '...\n', text)
+    sentences = re.split(r'\n', text)
 
     return sentences
 
 
-def base_form(sentences):
-    result = []
+def lemmatize_sentences(sentences):
+    tokenized_sentences = []
     for sentence in sentences:
-        result.append(nltk.pos_tag(nltk.word_tokenize(sentence)))
+        tokenized_sentences.append(nltk.pos_tag(nltk.word_tokenize(sentence)))
 
-    words = []
+    words_with_tags = []
 
-    for sentence in result:
+    for sentence in tokenized_sentences:
         for word, tag in sentence:
             if tag.startswith('N'):
-                words.append((word, 'n'))
+                words_with_tags.append((word, 'n'))
             elif tag.startswith('V'):
-                words.append((word, 'v'))
+                words_with_tags.append((word, 'v'))
             elif tag.startswith('J'):
-                words.append((word, 'a'))
-            elif tag.startswith('RB'):
-                words.append((word, 'r'))
+                words_with_tags.append((word, 'a'))
+            # there are not adverbs in xml file
+            # elif tag.startswith('RB'):
+            #     words_with_tags.append((word, 'r'))
 
     lemmatizer = WordNetLemmatizer()
 
-    base_words = set()
-    for word, tag in words:
-        base_words.add((lemmatizer.lemmatize(word, pos=tag), tag))
-    return base_words
+    base_form_of_words_with_tags = set()
+    for word, tag in words_with_tags:
+        base_form_of_words_with_tags.add((lemmatizer.lemmatize(word, pos=tag), tag))
+    return base_form_of_words_with_tags
 
 
 def remove_stop_words(words):
-    unique_words = set()
-
     all_words = [(word, tag) for word, tag in words if word not in nc.stopwords.words('english') and len(word) > 1]
 
+    unique_words = set()
     for word in all_words:
         unique_words.add(word)
-
     return unique_words
-
-
-def translate(word, tag):
-    syns = wordnet.synsets(word)
-    words_to_translate = []
-    substring = '.' + tag + '.'
-    print(substring)
-    for syn in syns:
-        if substring in syn.name():
-            words_to_translate.append(syn.name())
-    print("Synsets:")
-    print(syns)
-    print("Synsets to translate:")
-    print(words_to_translate)
-    count_words_to_translate[tag] = count_words_to_translate[tag] + len(words_to_translate)
-    translated_words = []
-    for word_to_translate in words_to_translate:
-        translated_words.append(wordnet.synset(word_to_translate).lemma_names('pol'))
-    count = sum(len(elem) > 0 for elem in translated_words)
-    count_words_translated[tag] = count_words_translated[tag] + count
-    return translated_words
 
 
 if __name__ == '__main__':
