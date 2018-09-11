@@ -11,14 +11,30 @@
 }(document, 'script', 'facebook-jssdk'));
 
   function continueToPanel(){
+    $('#loginProgress').html("<p>Czekaj...</p>");
     FB.getLoginStatus(function(response) {
       if (response.status === 'connected') {
         document.cookie = "fbtoken=" + response.authResponse.accessToken;
-        window.history.back();
+        $(document).ready(function() {
+          $.ajax({
+            url: "{{backend_root}}/users",
+            headers: {'Authorization': response.authResponse.accessToken}
+          }).then(function(user) {
+            if(user.admin){
+              window.history.back();
+            }else{
+              FB.logout();
+              $('#loginProgress').html("<h2>Nie jesteś administratorem</h2><p>Panel Administratora na nic Ci się nie przyda.</p>");
+            }
+          });
+        });
+      } else {
+        $('#loginProgress').html("<p>Musisz zalogować się do Facebooka, aby kontynuować.</p><p><a href=\"\" onClick=\"location.reload()\">Odśwież stronę</a> i spróbuj jeszcze raz.</p>");
       }
     });
   }
 </script>
-
- <div class="fb-login-button" data-max-rows="3" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="true" onlogin="continueToPanel()"></div>
+<div id="loginProgress">
+  <div class="fb-login-button" data-max-rows="3" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="true" onlogin="continueToPanel()"></div>
+</div>
 {% endblock %}

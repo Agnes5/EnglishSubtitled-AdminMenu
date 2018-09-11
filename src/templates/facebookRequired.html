@@ -31,3 +31,13 @@
     }(document, 'script', 'facebook-jssdk'));
   </script>
 {% endblock %}
+{% block fblogout %}
+<script>
+  function logOut(){
+    FB.logout(function(response) {
+      location.reload()
+    });
+  }
+</script>
+<a href="" onClick="logOut()">logout</a>
+{% endblock %}

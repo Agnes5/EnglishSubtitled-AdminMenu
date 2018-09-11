@@ -2,6 +2,7 @@ from flask import Flask
 from src.directory_lister import DirectoryLister
 from flask import render_template
 from flask import request
+import src.constants
 
 app = Flask("src")
 
@@ -17,7 +18,7 @@ def logged_in():
 
 @app.route("/login", methods=['GET'])
 def login():
-    return render_template("facebookLogin.html")
+    return render_template("facebookLogin.html", root=src.constants.ROOT, backend_root=src.constants.BACKEND_ROOT)
 
 if __name__ == '__main__':
     app.run(ssl_context='adhoc')
