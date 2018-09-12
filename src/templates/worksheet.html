@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block title %}English Subtitled Admin: Worksheet{% endblock %}
+{% block content %}
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Angielski</th>
+            <th scope="col">Polski</th>
+            <th scope="col">Kontekst</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for word in words %}
+        <tr>
+            <td>{{word[0]}}</td>
+            <td><input type="text" value="{{word[1]}}"></td>
+            <td>{{word[2].split(word[0])[0]}}<b>{{word[0]}}</b>{{word[2].split(word[0])[1]}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

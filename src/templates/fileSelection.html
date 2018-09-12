@@ -2,8 +2,7 @@
 {% block title %}English Subtitled Admin: Choose file{% endblock %}
 {% block content %}
 Wybierz plik pośredni lekcji, nad którą chcesz pracować:
-<!--<form action="/" method="post">-->
-<form>
+<form action="/worksheet" method="post">
     <select name="File" class="form-control" >
     {% for formatted,filename in folder_content.items() %}
         <option value="{{filename}}">{{formatted}}</option>
