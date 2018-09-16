@@ -1,12 +1,4 @@
 
-def find_literals_by_id(word_id, root, parent_map):
-    literals = []
-    for synset in root.findall('SYNSET/ID'):
-        if synset.text == word_id:
-            literals += [literal.text for literal in parent_map.get(synset).findall('./SYNONYM/LITERAL')]
-    return literals
-
-
 def translate_word(word_to_translate, tag, root, parent_map):
     syn_words = []
     hiper_words = []
@@ -42,9 +34,17 @@ def translate_word(word_to_translate, tag, root, parent_map):
 
     if len(syn_words) != 0:
         return syn_words
-    elif len(syn_words) == 0 and len(pot_odp_words) != 0:
+    elif len(pot_odp_words) != 0:
         return pot_odp_words
-    elif len(pot_odp_words) == 0 and len(hiper_words) != 0:
+    elif len(hiper_words) != 0:
         return hiper_words
     else:
         return hipo_words
+
+
+def find_literals_by_id(word_id, root, parent_map):
+    literals = []
+    for synset in root.findall('SYNSET/ID'):
+        if synset.text == word_id:
+            literals += [literal.text for literal in parent_map.get(synset).findall('./SYNONYM/LITERAL')]
+    return literals

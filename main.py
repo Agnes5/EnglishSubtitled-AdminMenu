@@ -23,7 +23,7 @@ def main():
 
     tree = ET.parse('plwordnet-4.0-visdisc.xml')
     root = tree.getroot()
-    parent_map = {c: p for p in tree.iter() for c in p}
+    parent_map = {child: parent for parent in tree.iter() for child in parent}
 
     for word, tag in words_to_translate:
         translations = translator.translate_word(word, tag, root, parent_map)
@@ -36,16 +36,22 @@ def main():
 def parse_subtitles(file):
     text = file.read()
 
+    # remove lines with time intervals and numbers
     text = re.sub(r'\n\d+:\d+:\d+,\d+ --> \d+:\d+:\d+,\d+\n', '\n', text)
     text = re.sub(r'[0-9]+\n', '', text)
     text = re.sub(r'\n\n', '\n', text)
+
+    # remove html tags
     text = re.sub(r'<[a-zA-Z/]+>', '', text)
+
+    # remove redundant white spaces
     text = re.sub(r'\n', ' ', text)
     text = re.sub(r' +', ' ', text).lower()
     text = re.sub(r'^ ', '', text)
 
     text = re.sub(r'\ufeff', '', text)  # todo what if in file is other coding
 
+    # split text to sentence
     text = re.sub(r'\? ', '?\n', text)
     text = re.sub(r'! ', '!\n', text)
     text = re.sub(r'\. ', '.\n', text)
