@@ -26,6 +26,10 @@
               FB.logout();
               $('#loginProgress').html("<h2>Nie jesteś administratorem</h2><p>Panel Administratora na nic Ci się nie przyda.</p>");
             }
+          },
+          function() {
+            FB.logout();
+            $('#loginProgress').html("<h2>Błąd połączenia z English Subtitled</h2><p>Nie można zweryfikować uprawnień admina ani wysłać lekcji do usługi.</p>");
           });
         });
       } else {
