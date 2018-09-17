@@ -21,7 +21,7 @@
             headers: {'Authorization': response.authResponse.accessToken}
           }).then(function(user) {
             if(user.admin){
-              window.history.back();
+              window.location.assign(Cookies.get('redirect_from'))
             }else{
               FB.logout();
               $('#loginProgress').html("<h2>Nie jesteś administratorem</h2><p>Panel Administratora na nic Ci się nie przyda.</p>");
