@@ -1,5 +1,6 @@
 from flask import Flask
 from src.directory_lister import DirectoryLister
+from src.worksheet_form_parser import WorksheetFormParser
 from flask import render_template
 from flask import request
 import src.constants
@@ -33,6 +34,15 @@ def show_worksheet():
             if len(row) >= 3:
                 words.append(row)
     return render_template("worksheet.html", words=words)
+
+
+@app.route("/upload_lesson", methods=['POST'])
+def upload_lesson():
+    token = request.form["facebook_field"]
+    lesson = WorksheetFormParser()
+    lesson.parse_worksheet(request.form)
+    print(lesson.get())
+    return lesson.get_json()
 
 
 if __name__ == '__main__':

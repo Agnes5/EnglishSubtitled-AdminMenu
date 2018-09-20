@@ -1,6 +1,7 @@
-{% extends "layout.html" %}
+{% extends "facebookRequired.html" %}
 {% block title %}English Subtitled Admin: Worksheet{% endblock %}
 {% block content %}
+<form id="worksheet" action="/upload_lesson" method="post">
 <table class="table">
     <thead class="thead-dark">
         <tr>
@@ -15,11 +16,20 @@
         {% set index = loop.index0 %}
         <tr>
             <td>{{word[0]}}</td>
-            <td><input id="t{{index}}" type="text" value="{{word[2]}}"></td>
+            <td><input id="t{{index}}" name="{{word[0]}}" type="text" value="{{word[2]}}"></td>
             <td>{{word[1].split(word[0])[0]}}<b>{{word[0]}}</b>{{word[1].split(word[0])[1]}}</td>
             <td>{% for suggestion in word[2:] %}<input type="button" value="{{suggestion}}" onClick="$('#t{{index}}').val('{{suggestion}}');"/>{% endfor %}</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+<input type="hidden" id="facebook_field" name="facebook_field" />
+<input type="submit" />
+</form>
+<script>
+    $('#worksheet').submit(function() {
+        $('#facebook_field').val(fbtoken);
+        return true;
+    });
+</script>
 {% endblock %}
