@@ -30,7 +30,7 @@ def show_worksheet():
     with open("input/"+request.form["File"], "r") as lesson:
         reader = csv.reader(lesson, delimiter=';', quotechar='"')
         for row in reader:
-            if len(row) == 3:
+            if len(row) >= 3:
                 words.append(row)
     return render_template("worksheet.html", words=words)
 

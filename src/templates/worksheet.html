@@ -7,14 +7,17 @@
             <th scope="col">Angielski</th>
             <th scope="col">Polski</th>
             <th scope="col">Kontekst</th>
+            <th scope="col">Propozycje</th>
         </tr>
     </thead>
     <tbody>
         {% for word in words %}
+        {% set index = loop.index0 %}
         <tr>
             <td>{{word[0]}}</td>
-            <td><input type="text" value="{{word[1]}}"></td>
-            <td>{{word[2].split(word[0])[0]}}<b>{{word[0]}}</b>{{word[2].split(word[0])[1]}}</td>
+            <td><input id="t{{index}}" type="text" value="{{word[2]}}"></td>
+            <td>{{word[1].split(word[0])[0]}}<b>{{word[0]}}</b>{{word[1].split(word[0])[1]}}</td>
+            <td>{% for suggestion in word[2:] %}<input type="button" value="{{suggestion}}" onClick="$('#t{{index}}').val('{{suggestion}}');"/>{% endfor %}</td>
         </tr>
         {% endfor %}
     </tbody>
