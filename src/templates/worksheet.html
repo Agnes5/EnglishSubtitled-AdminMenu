@@ -2,6 +2,8 @@
 {% block title %}English Subtitled Admin: Worksheet{% endblock %}
 {% block content %}
 <form id="worksheet" action="/upload_lesson" method="post">
+Tytuł filmu <input type="text" name="film_title" value="{{title}}" />
+Tytuł lekcji <input type="text" name="lesson_title" value="{{title}}" />
 <table class="table">
     <thead class="thead-dark">
         <tr>

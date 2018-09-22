@@ -3,7 +3,8 @@ from src.directory_lister import DirectoryLister
 from src.worksheet_form_parser import WorksheetFormParser
 from flask import render_template
 from flask import request
-import src.constants
+import requests
+from src.constants import BACKEND_ROOT, ROOT
 import csv
 
 app = Flask("src")
@@ -22,7 +23,7 @@ def logged_in():
 
 @app.route("/login", methods=['GET'])
 def login():
-    return render_template("facebookLogin.html", root=src.constants.ROOT, backend_root=src.constants.BACKEND_ROOT)
+    return render_template("facebookLogin.html", root=ROOT, backend_root=BACKEND_ROOT)
 
 
 @app.route("/worksheet", methods=['POST'])
@@ -33,7 +34,7 @@ def show_worksheet():
         for row in reader:
             if len(row) >= 3:
                 words.append(row)
-    return render_template("worksheet.html", words=words)
+    return render_template("worksheet.html", words=words, title=DirectoryLister.format_filename(request.form["File"]))
 
 
 @app.route("/upload_lesson", methods=['POST'])
@@ -42,7 +43,12 @@ def upload_lesson():
     lesson = WorksheetFormParser()
     lesson.parse_worksheet(request.form)
     print(lesson.get())
-    return lesson.get_json()
+    r = requests.post(url=BACKEND_ROOT+"/lessons", json=lesson.get(), headers={'Authorization': token})
+    print(str(r.status_code) + " " + str(r.content))
+    if r.status_code == 200:
+        return render_template("uploadSuccess.html")
+    else:
+        return render_template("uploadFailed.html", error_code=r.status_code, lesson=lesson.get())
 
 
 if __name__ == '__main__':
