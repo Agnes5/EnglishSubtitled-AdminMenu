@@ -1,36 +1,29 @@
 import re
 import sys
-
 import nltk
 import nltk.corpus as nc
 from nltk.stem.wordnet import WordNetLemmatizer
 
-import translator
-import xml.etree.ElementTree as ET
-
 
 def main():
+    title = 'sintel_en.srt'
+
     try:
-        filename = sys.argv[1] if len(sys.argv) > 1 else "TheShawshankRedemption.txt"
-        file = open(filename, "r")
+        filename = sys.argv[1] if len(sys.argv) > 1 else './subtitles/' + title + '.srt'
+        file = open(filename, 'r')
+        result_file = open('./translated_films/' + title + '_result.csv', 'a')
     except IOError:
-        print("Cannot open {0} file".format(filename))
+        print('Cannot open file')
         sys.exit(0)
 
     sentences = parse_subtitles(file)
-    base_form_of_words = lemmatize_sentences(sentences)
+    base_form_of_words, counts_words, all_words_count, example_sentence_for_words = lemmatize_sentences(sentences)
     words_to_translate = remove_stop_words(base_form_of_words)
 
-    tree = ET.parse('plwordnet-4.0-visdisc.xml')
-    root = tree.getroot()
-    parent_map = {child: parent for parent in tree.iter() for child in parent}
-
+    result_file.write('all_words#' + str(all_words_count) + '\n')
+    result_file.write('word#tag#count#example\n')
     for word, tag in words_to_translate:
-        translations = translator.translate_word(word, tag, root, parent_map)
-        print('word: {}, tag: {}, translations: '.format(word, tag), end='')
-        for translation in translations:
-            print(translation, end=', ')
-        print('')
+        result_file.write('{}#{}#{}#{}\n'.format(word, tag, counts_words[(word, tag)], example_sentence_for_words[(word, tag)]))
 
 
 def parse_subtitles(file):
@@ -62,39 +55,57 @@ def parse_subtitles(file):
 
 
 def lemmatize_sentences(sentences):
+    all_words_count = 0
     tokenized_sentences = []
     for sentence in sentences:
-        tokenized_sentences.append(nltk.pos_tag(nltk.word_tokenize(sentence)))
+        tokenized_sentences.append((nltk.pos_tag(nltk.word_tokenize(sentence)), sentence))
 
-    words_with_tags = []
-
-    for sentence in tokenized_sentences:
-        for word, tag in sentence:
-            if tag.startswith('N'):
-                words_with_tags.append((word, 'n'))
-            elif tag.startswith('V'):
-                words_with_tags.append((word, 'v'))
-            elif tag.startswith('J'):
-                words_with_tags.append((word, 'a'))
-            # there are not adverbs in xml file
-            # elif tag.startswith('RB'):
-            #     words_with_tags.append((word, 'r'))
+    base_form_of_words_with_tags = set()
+    counts_words = dict()
+    example_sentence_for_words = dict()
 
     lemmatizer = WordNetLemmatizer()
 
-    base_form_of_words_with_tags = set()
-    for word, tag in words_with_tags:
-        base_form_of_words_with_tags.add((lemmatizer.lemmatize(word, pos=tag), tag))
-    return base_form_of_words_with_tags
+    for sentence, example in tokenized_sentences:
+        for word, tag in sentence:
+            all_words_count += 1
+            if tag.startswith('N'):
+                tag = 'n'
+                to_add = (lemmatizer.lemmatize(word, pos=tag), tag)
+                if to_add in base_form_of_words_with_tags:
+                    counts_words[to_add] += 1
+                else:
+                    base_form_of_words_with_tags.add(to_add)
+                    counts_words[to_add] = 1
+                    example_sentence_for_words[to_add] = example
+            elif tag.startswith('V'):
+                tag = 'v'
+                to_add = (lemmatizer.lemmatize(word, pos=tag), tag)
+                if to_add in base_form_of_words_with_tags:
+                    counts_words[to_add] += 1
+                else:
+                    base_form_of_words_with_tags.add(to_add)
+                    counts_words[to_add] = 1
+                    example_sentence_for_words[to_add] = example
+            elif tag.startswith('J'):
+                tag = 'a'
+                to_add = (lemmatizer.lemmatize(word, pos=tag), tag)
+                if to_add in base_form_of_words_with_tags:
+                    counts_words[to_add] += 1
+                else:
+                    base_form_of_words_with_tags.add(to_add)
+                    counts_words[to_add] = 1
+                    example_sentence_for_words[to_add] = example
+            # todo there are not adverbs in xml file, remove later
+            # elif tag.startswith('RB'):
+            #     words_with_tags.append((word, 'r'))
+
+    return base_form_of_words_with_tags, counts_words, all_words_count, example_sentence_for_words
 
 
 def remove_stop_words(words):
     all_words = [(word, tag) for word, tag in words if word not in nc.stopwords.words('english') and len(word) > 1]
-
-    unique_words = set()
-    for word in all_words:
-        unique_words.add(word)
-    return unique_words
+    return all_words
 
 
 if __name__ == '__main__':
