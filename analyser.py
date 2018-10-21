@@ -1,15 +1,12 @@
 import sys
 import re
 import tfidf
-import llr
 import translator
-import xml.etree.ElementTree as ET
-
 
 NUMBER_OF_WORDS = 20
 
 def main():
-    film = 'TheShawshankRedemption'
+    film = 'sintel_en'
     result_tfidf = tfidf.analysis_words_from_film(film)
 
     # llr method
@@ -38,16 +35,12 @@ def main():
 
     words = sorted(words, key=lambda x: x[3], reverse=True)
 
-    tree = ET.parse('plwordnet-4.0-visdisc.xml')
-    root = tree.getroot()
-    parent_map = {child: parent for parent in tree.iter() for child in parent}
-
     translated_words = 0
     index = 0
     while translated_words < NUMBER_OF_WORDS:
         word, tag, example, _ = words[index]
         index += 1
-        translations = translator.translate_word(word, tag, root, parent_map)
+        translations = translator.translate_word(word, tag)
         if translations:
             translations = str(translations)
             translations = translations.replace('\'', '"')
