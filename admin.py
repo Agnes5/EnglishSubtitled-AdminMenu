@@ -43,7 +43,7 @@ def upload_lesson():
     lesson = WorksheetFormParser()
     lesson.parse_worksheet(request.form)
     print(lesson.get())
-    r = requests.post(url=BACKEND_ROOT+"/lessons", json=lesson.get(), headers={'Authorization': token})
+    r = requests.post(url=BACKEND_ROOT+"/lessons", json=lesson.get(), headers={'Authorization': token}, verify=False)
     print(str(r.status_code) + " " + str(r.content))
     if r.status_code == 200:
         return render_template("uploadSuccess.html")
