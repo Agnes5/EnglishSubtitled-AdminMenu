@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block title %}English Subtitled Admin: Login{% endblock %}
+{% block content %}
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = 'https://connect.facebook.net/pl_PL/sdk.js#xfbml=1&version=v3.1&appId=733670553423793&autoLogAppEvents=1';
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
+  function continueToPanel(){
+    $('#loginProgress').html("<p>Czekaj...</p>");
+    FB.getLoginStatus(function(response) {
+      if (response.status === 'connected') {
+        document.cookie = "fbtoken=" + response.authResponse.accessToken;
+        $(document).ready(function() {
+          $.ajax({
+            url: "{{backend_root}}/users",
+            headers: {'Authorization': response.authResponse.accessToken}
+          }).then(function(user) {
+            if(user.admin){
+              window.location.assign(Cookies.get('redirect_from'))
+            }else{
+              FB.logout();
+              $('#loginProgress').html("<h2>Nie jesteś administratorem</h2><p>Panel Administratora na nic Ci się nie przyda.</p>");
+            }
+          },
+          function() {
+            FB.logout();
+            $('#loginProgress').html("<h2>Błąd połączenia z English Subtitled</h2><p>Nie można zweryfikować uprawnień admina ani wysłać lekcji do usługi.</p>");
+          });
+        });
+      } else {
+        $('#loginProgress').html("<p>Musisz zalogować się do Facebooka, aby kontynuować.</p><p><a href=\"\" onClick=\"location.reload()\">Odśwież stronę</a> i spróbuj jeszcze raz.</p>");
+      }
+    });
+  }
+</script>
+<div id="loginProgress">
+  <div class="fb-login-button" data-max-rows="3" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="true" onlogin="continueToPanel()"></div>
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block fb %}
+<script>
+  var fbtoken;
+
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '733670553423793',
+      cookie     : true,
+      xfbml      : true,
+      version    : 'v3.1'
+    });
+      
+    FB.AppEvents.logPageView();
+
+    FB.getLoginStatus(function(response) {
+      if (response.status === 'connected') {
+        fbtoken = response.authResponse.accessToken;
+      } else {
+        Cookies.set('redirect_from', window.location.toString(), { path: '/' });
+        window.location.assign("/login");
+      }
+    });
+  };
+  
+  (function(d, s, id){
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) {return;}
+      js = d.createElement(s); js.id = id;
+      js.src = "https://connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+  </script>
+{% endblock %}
+{% block fblogout %}
+<script>
+  function logOut(){
+    FB.logout(function(response) {
+      location.reload()
+    });
+  }
+</script>
+<a onClick="logOut()" style="color: blue">logout</a>
+{% endblock %}

@@ -1,0 +1,10 @@
+main{
+    padding-top: 4em;
+}
+.card{
+    margin: 10px;
+}
+
+.card-body{
+    padding: 0;
+}

@@ -1,0 +1,10 @@
+{% extends "facebookRequired.html" %}
+{% block title %}English Subtitled Admin: Worksheet{% endblock %}
+{% block content %}
+<h1>Dodawanie lekcji zakończone niepowodzeniem</h1>
+<h2>Kod błędu: {{error_code}}</h2>
+<h2>Wysyłana wiadomość</h2>
+<pre>{{lesson}}</pre>
+<p>Możesz ją skopiować i wysłać później</p>
+<a href="/">Powrót - zmiany zostaną utracone</a>
+{% endblock %}
