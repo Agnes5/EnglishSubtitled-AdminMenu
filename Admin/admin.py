@@ -4,7 +4,8 @@ from src.worksheet_form_parser import WorksheetFormParser
 from flask import render_template
 from flask import request
 import requests
-from src.constants import BACKEND_ROOT, ROOT
+import webbrowser
+from src.constants import BACKEND_ROOT, ROOT, ROOT_HOST_ONLY
 import csv
 
 app = Flask("src")
@@ -29,7 +30,7 @@ def login():
 @app.route("/worksheet", methods=['POST'])
 def show_worksheet():
     words = []
-    with open("input/"+request.form["File"], "r") as lesson:
+    with open("input/" + request.form["File"], "r") as lesson:
         reader = csv.reader(lesson, delimiter=';', quotechar='"')
         for row in reader:
             if len(row) >= 3:
@@ -43,7 +44,7 @@ def upload_lesson():
     lesson = WorksheetFormParser()
     lesson.parse_worksheet(request.form)
     print(lesson.get())
-    r = requests.post(url=BACKEND_ROOT+"/lessons", json=lesson.get(), headers={'Authorization': token}, verify=False)
+    r = requests.post(url=BACKEND_ROOT + "/lessons", json=lesson.get(), headers={'Authorization': token}, verify=False)
     print(str(r.status_code) + " " + str(r.content))
     if r.status_code == 200:
         return render_template("uploadSuccess.html")
@@ -52,4 +53,5 @@ def upload_lesson():
 
 
 if __name__ == '__main__':
-    app.run(ssl_context='adhoc')
+    webbrowser.open(ROOT)
+    app.run(host=ROOT_HOST_ONLY, ssl_context='adhoc')
