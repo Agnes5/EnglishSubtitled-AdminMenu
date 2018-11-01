@@ -3,20 +3,21 @@ import sys
 import nltk
 import nltk.corpus as nc
 from nltk.stem.wordnet import WordNetLemmatizer
+import os
 
-
-def main():
-    title = 'sintel_en.srt'
-
+def parse_subtitles(filename, title, result_dir):
     try:
-        filename = sys.argv[1] if len(sys.argv) > 1 else './subtitles/' + title + '.srt'
         file = open(filename, 'r')
-        result_file = open('./translated_films/' + title + '_result.csv', 'a')
     except IOError:
-        print('Cannot open file')
-        sys.exit(0)
+        print('Cannot open file {}'.format(filename))
+        return
 
-    sentences = parse_subtitles(file)
+    if not os.path.exists(result_dir):
+        os.mkdir(result_dir)
+
+    result_file = open(result_dir + title + '.csv', 'w')
+
+    sentences = parse_subtitles_to_sentences(file)
     base_form_of_words, counts_words, all_words_count, example_sentence_for_words = lemmatize_sentences(sentences)
     words_to_translate = remove_stop_words(base_form_of_words)
 
@@ -26,7 +27,7 @@ def main():
         result_file.write('{}#{}#{}#{}\n'.format(word, tag, counts_words[(word, tag)], example_sentence_for_words[(word, tag)]))
 
 
-def parse_subtitles(file):
+def parse_subtitles_to_sentences(file):
     text = file.read()
 
     # remove lines with time intervals and numbers
@@ -96,9 +97,6 @@ def lemmatize_sentences(sentences):
                     base_form_of_words_with_tags.add(to_add)
                     counts_words[to_add] = 1
                     example_sentence_for_words[to_add] = example
-            # todo there are not adverbs in xml file, remove later
-            # elif tag.startswith('RB'):
-            #     words_with_tags.append((word, 'r'))
 
     return base_form_of_words_with_tags, counts_words, all_words_count, example_sentence_for_words
 
@@ -106,7 +104,3 @@ def lemmatize_sentences(sentences):
 def remove_stop_words(words):
     all_words = [(word, tag) for word, tag in words if word not in nc.stopwords.words('english') and len(word) > 1]
     return all_words
-
-
-if __name__ == '__main__':
-    main()

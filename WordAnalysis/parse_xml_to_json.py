@@ -1,11 +1,16 @@
 import lxml.etree as ET
 import json
-import time
+
 from tqdm import *
 
 
-def parse_xml_to_json():
-    tree = ET.parse('plwordnet-4.0-visdisc.xml')
+def parse_xml_to_json(filename='plwordnet-4.0-visdisc.xml', dictionary_path='dictionary.json'):
+    try:
+        open('filename', 'r')
+    except IOError:
+        print('Cannot open file ', filename)
+        return
+    tree = ET.parse(filename)
     root = tree.getroot()
     parent_map = {child: parent for parent in tree.iter() for child in parent}
 
@@ -56,8 +61,5 @@ def parse_xml_to_json():
             elif relation.text == 'Hipo_plWN-PWN':
                 add_translation_to_dictionary(relation_category[3])
 
-    with open('dictionary.json', 'w') as fp:
+    with open(dictionary_path, 'w') as fp:
         json.dump(dictionary, fp)
-
-
-parse_xml_to_json()

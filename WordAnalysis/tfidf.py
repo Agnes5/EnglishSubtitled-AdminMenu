@@ -6,7 +6,7 @@ import math
 
 def analysis_words_from_film(film):
     try:
-        translated_film = open('./translated_films/' + film + '_result.csv', 'r')
+        translated_film = open('./parsed_films/' + film + '.csv', 'r')
     except IOError:
         print('Cannot open file with translated words from {}', film)
         sys.exit(0)
@@ -30,7 +30,7 @@ def analysis_words_from_film(film):
         count_word_in_film = int(line[2])
 
         count_films_with_word = 0
-        for film in os.listdir('./translated_films'):
+        for film in os.listdir('./parsed_films'):
             if is_film_contains_word(film, word, tag):
                 count_films_with_word += 1
 
@@ -52,12 +52,12 @@ def tfidf(count_word_in_film, count_all_words_in_films, count_films_with_word):
 
 
 def count_films():
-    return len(os.listdir('./translated_films'))
+    return len(os.listdir('./parsed_films'))
 
 
 def is_film_contains_word(film, word, tag):
     try:
-        filename = './translated_films/' + film
+        filename = './parsed_films/' + film
         translated_film = open(filename, 'r')
     except IOError:
         print('Cannot open {} file'.format(filename))

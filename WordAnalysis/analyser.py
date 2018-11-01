@@ -1,27 +1,33 @@
-import sys
 import re
-import tfidf
-import translator
+import sys
+
+import os
+
+from WordAnalysis import translator, tfidf
+
 
 NUMBER_OF_WORDS = 20
 
-def main():
-    film = 'sintel_en'
-    result_tfidf = tfidf.analysis_words_from_film(film)
+def analyse(title, input_dir, output_dir):
+    result_tfidf = tfidf.analysis_words_from_film(title)
 
     # llr method
     # result_llr = llr.analysis_words_from_film(film)
 
-    # to print result for two methods
+    # todo to print result for two methods, do usuniecia pozniej
     # for a, b in zip(result_tfidf, result_llr):
     #     print('T: {}    L: {}'.format(a, b))
 
     try:
-        file = open('./translated_films/' + film + '_result.csv', 'r')
-        result_file = open('./result/' + film + '_result.csv', 'w')
+        file = open('{}{}.csv'.format(input_dir, title), 'r')
     except IOError:
-        print('Cannot open file with translated words from {0}', film)
+        print('Cannot open file with translated words from {}', title)
         sys.exit(0)
+
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
+
+    result_file = open('{}{}.csv'.format(output_dir, title), 'w')
 
     words = []
     index = 0
@@ -50,7 +56,3 @@ def main():
 
             result_file.write('"{}";"{}";{}\n'.format(word, example, translations))
             translated_words += 1
-
-
-if __name__ == '__main__':
-    main()
