@@ -9,11 +9,6 @@ PATH_TO_DICTIONARY = 'dictionary.json'
 PATH_TO_PARSED_FILMS = './parsed_films/'
 PATH_TO_DIR_WITH_RESULTS = './Admin/input/'
 
-def title_from_path(path):
-    filename = path.split('/')[-1]
-    title = filename.split('.')[0]
-    return title
-
 
 def menu():
     while True:
@@ -29,7 +24,7 @@ def menu():
         if choice == '0':
             if Path(PATH_TO_DICTIONARY).is_file():
                 create_again = input('Plik json ze słownikiem już istnieje, '
-                                     'czy na pewno chcesz nadpisać już istniejący plik? (Y/n) ')
+                                     'czy na pewno chcesz nadpisać już istniejący plik? [Y/n] ')
                 if create_again == 'n':
                     continue
             path_to_xml = input('Podaj ścieżkę do pliku xml ze słowosiecią (domyślnie: {}): '
@@ -46,31 +41,45 @@ def menu():
             if title == '':
                 title = title_from_path(path_to_subtitles)
 
-            if Path(PATH_TO_PARSED_FILMS + title + '.csv').is_file():
+            if Path('{}{}.csv'.format(PATH_TO_PARSED_FILMS, title)).is_file():
                 create_again = input('Plik z sparsowanymi napisami już istnieje, '
-                                     'czy na pewno chcesz nadpisać już istniejący plik? (Y/n) ')
+                                     'czy na pewno chcesz nadpisać już istniejący plik? [Y/n] ')
                 if create_again == 'n':
                     continue
+
             parse_subtitles(path_to_subtitles, title, PATH_TO_PARSED_FILMS)
 
         elif choice == '2':
             print('Film będzie analizowany na podstawie filmów znajdujących się w folderze {}'
                   .format(PATH_TO_PARSED_FILMS))
+
             title = input('Podaj tytuł filmu: ')
+
             if Path('{}{}.csv'.format(PATH_TO_DIR_WITH_RESULTS, title)).is_file():
                 create_again = input('Plik z wynikami analizy tego filmu już istnieje, '
-                                     'czy na pewno chcesz nadpisać już istniejący plik? (Y/n) ')
+                                     'czy na pewno chcesz nadpisać już istniejący plik? [Y/n] ')
                 if create_again == 'n':
                     continue
-            analyse(title, PATH_TO_PARSED_FILMS, PATH_TO_DIR_WITH_RESULTS)
+
+            analyse(title, PATH_TO_PARSED_FILMS, PATH_TO_DIR_WITH_RESULTS, PATH_TO_DICTIONARY)
+
         elif choice == '3':
             # todo uruchamianie panelu admina
             pass
+
         elif choice == 'q':
             exit(0)
+
         else:
             print('Nieprawidłowy wybór.')
 
         print()
+
+
+def title_from_path(path):
+    filename = path.split('/')[-1]
+    title = filename.split('.')[0]
+    return title
+
 
 menu()

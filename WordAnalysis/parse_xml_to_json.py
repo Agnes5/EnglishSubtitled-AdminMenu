@@ -1,15 +1,12 @@
 import lxml.etree as ET
 import json
-
 from tqdm import *
+from WordAnalysis.utils import open_file
 
 
 def parse_xml_to_json(filename='plwordnet-4.0-visdisc.xml', dictionary_path='dictionary.json'):
-    try:
-        open('filename', 'r')
-    except IOError:
-        print('Cannot open file ', filename)
-        return
+    open_file(filename)
+
     tree = ET.parse(filename)
     root = tree.getroot()
     parent_map = {child: parent for parent in tree.iter() for child in parent}
