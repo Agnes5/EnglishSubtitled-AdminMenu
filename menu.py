@@ -2,6 +2,7 @@ from WordAnalysis.analyser import analyse
 from WordAnalysis.parse_subtitles import parse_subtitles
 from WordAnalysis.parse_xml_to_json import parse_xml_to_json
 from pathlib import Path
+import os
 
 
 DEFAULT_PATH_TO_XML = './plwordnet-4.0-visdisc.xml'
@@ -14,7 +15,9 @@ def menu():
     while True:
         print('0. Zparsuj xml do json')
         print('1. Zparsuj napisy z filmu')
+        print('1b. Zparsuj napisy z wielu filmów')
         print('2. Przeanalizuj film')
+        print('2b. Przeanalizuj wszystkie zparsowane filmów')
         print('3. Zarządzaj tłumaczeniami')
         print('q. Wyjdź')
         print()
@@ -49,6 +52,19 @@ def menu():
 
             parse_subtitles(path_to_subtitles, title, PATH_TO_PARSED_FILMS)
 
+        elif choice == '1b':
+            path_to_subtitles = input('Podaj ścieżkę do folderu z plikami z napisami: ')
+            create_again = input('Czy nadpisywać pliki wynikowe jeśli będzie taka potrzeba? [Y/n]')
+
+            for file in os.listdir(path_to_subtitles):
+                title = title_from_path(file)
+
+                if Path('{}{}.csv'.format(PATH_TO_PARSED_FILMS, title)).is_file():
+                    if create_again == 'n':
+                        continue
+
+                parse_subtitles(path_to_subtitles, title, PATH_TO_PARSED_FILMS)
+
         elif choice == '2':
             print('Film będzie analizowany na podstawie filmów znajdujących się w folderze {}'
                   .format(PATH_TO_PARSED_FILMS))
@@ -63,10 +79,20 @@ def menu():
 
             analyse(title, PATH_TO_PARSED_FILMS, PATH_TO_DIR_WITH_RESULTS, PATH_TO_DICTIONARY)
 
-        elif choice == '3':
-            # todo uruchamianie panelu admina
-            pass
+        elif choice == '2b':
+            print('Filmy będą analizowane na podstawie filmów znajdujących się w folderze {}'
+                  .format(PATH_TO_PARSED_FILMS))
+            create_again = input('Czy nadpisywać pliki wynikowe jeśli będzie taka potrzeba? [Y/n]')
 
+            for file in os.listdir(PATH_TO_PARSED_FILMS):
+                if Path(PATH_TO_DIR_WITH_RESULTS + file).is_file():
+                    if create_again == 'n':
+                        continue
+
+                analyse(file.split('.')[0], PATH_TO_PARSED_FILMS, PATH_TO_DIR_WITH_RESULTS, PATH_TO_DICTIONARY)
+
+        elif choice == '3':
+            pass
         elif choice == 'q':
             exit(0)
 
