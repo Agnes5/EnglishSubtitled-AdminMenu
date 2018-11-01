@@ -3,7 +3,7 @@ from WordAnalysis.parse_subtitles import parse_subtitles
 from WordAnalysis.parse_xml_to_json import parse_xml_to_json
 from pathlib import Path
 import os
-
+from Admin import admin
 
 DEFAULT_PATH_TO_XML = './plwordnet-4.0-visdisc.xml'
 PATH_TO_DICTIONARY = 'dictionary.json'
@@ -93,6 +93,7 @@ def menu():
 
         elif choice == '3':
             pass
+            # admin.run()
         elif choice == 'q':
             exit(0)
 

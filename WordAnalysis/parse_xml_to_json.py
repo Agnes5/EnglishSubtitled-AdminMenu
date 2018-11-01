@@ -60,3 +60,7 @@ def parse_xml_to_json(filename='plwordnet-4.0-visdisc.xml', dictionary_path='dic
 
     with open(dictionary_path, 'w') as fp:
         json.dump(dictionary, fp)
+
+
+if __name__ == '__main__':
+    parse_xml_to_json()
