@@ -7,11 +7,12 @@ class DirectoryLister:
     extension = re.compile("\..*")
     underscore = re.compile("_")
 
-    def __init__(self, directory):
+    def __init__(self, directory, root_folder):
         self.directory = directory
+        self.root_folder = root_folder
 
     def list_folder(self):
-        files = listdir(self.directory)
+        files = listdir(self.root_folder + sep + self.directory)
         files_archived = dict()
         if ARCHIVE_FOLDER_NAME in files:
             files.remove(ARCHIVE_FOLDER_NAME)
@@ -21,7 +22,7 @@ class DirectoryLister:
         return files_formatted, files_archived
 
     def _list_archive_folder(self):
-        files_archived = listdir(self.directory + sep + ARCHIVE_FOLDER_NAME)
+        files_archived = listdir(self.root_folder + sep + self.directory + sep + ARCHIVE_FOLDER_NAME)
         return {self.format_filename(original): ARCHIVE_FOLDER_NAME + sep + original
                 for original in files_archived}
 

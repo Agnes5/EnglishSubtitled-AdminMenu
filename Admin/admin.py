@@ -1,22 +1,24 @@
 from flask import Flask
-from src.directory_lister import DirectoryLister
-from src.worksheet_form_parser import WorksheetFormParser
-from src.constants import *
+
+from Admin.src.directory_lister import DirectoryLister
+from Admin.src.worksheet_form_parser import WorksheetFormParser
+from Admin.src.constants import *
 from flask import render_template
 from flask import request
 import requests
 import webbrowser
 import pathlib
-from os import sep, rename
+from os import sep, rename, path
 import csv
 
+root_folder = path.dirname(path.realpath(__file__))
 
-app = Flask("src")
+app = Flask("src", root_path=root_folder + sep + 'src')
 
 
 @app.route("/", methods=['GET'])
 def file_select():
-    directory_lister = DirectoryLister(INPUT_FOLDER_NAME)
+    directory_lister = DirectoryLister(INPUT_FOLDER_NAME, root_folder)
     (folder_content, archive_content) = directory_lister.list_folder()
     return render_template("fileSelection.html", folder_content=folder_content, archive_content=archive_content)
 
@@ -34,14 +36,14 @@ def login():
 @app.route("/worksheet", methods=['POST'])
 def show_worksheet():
     words = []
-    with open("input/" + request.form["File"], "r") as lesson:
+    with open(root_folder + sep + INPUT_FOLDER_NAME + sep + request.form["File"], "r") as lesson:
         reader = csv.reader(lesson, delimiter=';', quotechar='"')
         for row in reader:
             if len(row) >= 3:
                 words.append(row)
     filename = request.form["File"]
     title = DirectoryLister.format_filename(filename)
-    title = str.replace(title, ARCHIVE_FOLDER_NAME + sep, '',1)
+    title = str.replace(title, ARCHIVE_FOLDER_NAME + sep, '', 1)
     return render_template("worksheet.html", words=words, title=title, filename=filename)
 
 
@@ -64,9 +66,10 @@ def upload_lesson():
 def _archive_lesson(filename):
     if ARCHIVE_FOLDER_NAME + sep in filename:
         return
-    path = pathlib.Path(INPUT_FOLDER_NAME + sep + ARCHIVE_FOLDER_NAME)
+    path = pathlib.Path(root_folder + sep + INPUT_FOLDER_NAME + sep + ARCHIVE_FOLDER_NAME)
     path.mkdir(exist_ok=True)
-    rename(INPUT_FOLDER_NAME + sep + filename, INPUT_FOLDER_NAME + sep + ARCHIVE_FOLDER_NAME + sep + filename)
+    rename(root_folder + sep + INPUT_FOLDER_NAME + sep + filename,
+           root_folder + sep + INPUT_FOLDER_NAME + sep + ARCHIVE_FOLDER_NAME + sep + filename)
 
 
 def start_admin_panel():
@@ -76,4 +79,3 @@ def start_admin_panel():
 
 if __name__ == '__main__':
     start_admin_panel()
-
