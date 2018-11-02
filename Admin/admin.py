@@ -6,6 +6,7 @@ from flask import render_template
 from flask import request
 import requests
 import webbrowser
+import pathlib
 from os import sep, rename
 import csv
 
@@ -63,6 +64,8 @@ def upload_lesson():
 def _archive_lesson(filename):
     if ARCHIVE_FOLDER_NAME + sep in filename:
         return
+    path = pathlib.Path(INPUT_FOLDER_NAME + sep + ARCHIVE_FOLDER_NAME)
+    path.mkdir(exist_ok=True)
     rename(INPUT_FOLDER_NAME + sep + filename, INPUT_FOLDER_NAME + sep + ARCHIVE_FOLDER_NAME + sep + filename)
 
 
