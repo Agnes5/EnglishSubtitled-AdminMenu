@@ -69,6 +69,11 @@ def _archive_lesson(filename):
     rename(INPUT_FOLDER_NAME + sep + filename, INPUT_FOLDER_NAME + sep + ARCHIVE_FOLDER_NAME + sep + filename)
 
 
-if __name__ == '__main__':
+def start_admin_panel():
     webbrowser.open(ROOT)
     app.run(host=ROOT_HOST_ONLY, ssl_context='adhoc')
+
+
+if __name__ == '__main__':
+    start_admin_panel()
+
