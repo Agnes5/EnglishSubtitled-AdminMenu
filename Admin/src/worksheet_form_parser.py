@@ -4,7 +4,7 @@ import flask
 class WorksheetFormParser:
     eng_word = "engWord"
     pl_word = "plWord"
-    reserved_keys = ["facebook_field", "film_title", "lesson_title"]
+    reserved_keys = ["facebook_field", "film_title", "lesson_title", "file_name"]
 
     def __init__(self):
         self.translations = []
