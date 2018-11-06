@@ -13,11 +13,11 @@ PATH_TO_DIR_WITH_RESULTS = './Admin/input/'
 
 def menu():
     while True:
-        print('0. Zparsuj xml do json')
-        print('1. Zparsuj napisy z filmu')
-        print('1b. Zparsuj napisy z wielu filmów')
+        print('0. Przetwórz xml do json')
+        print('1. Przetwórz napisy z filmu')
+        print('1a. Przetwórz napisy z wielu filmów')
         print('2. Przeanalizuj film')
-        print('2b. Przeanalizuj wszystkie zparsowane filmów')
+        print('2a. Przeanalizuj wszystkie przetworzone filmy')
         print('3. Zarządzaj tłumaczeniami')
         print('q. Wyjdź')
         print()
@@ -45,7 +45,7 @@ def menu():
                 title = title_from_path(path_to_subtitles)
 
             if Path('{}{}.csv'.format(PATH_TO_PARSED_FILMS, title)).is_file():
-                create_again = input('Plik z sparsowanymi napisami już istnieje, '
+                create_again = input('Plik z przetworzonymi napisami już istnieje, '
                                      'czy na pewno chcesz nadpisać już istniejący plik? [Y/n] ')
                 if create_again == 'n':
                     continue
