@@ -92,8 +92,7 @@ def menu():
                 analyse(file.split('.')[0], PATH_TO_PARSED_FILMS, PATH_TO_DIR_WITH_RESULTS, PATH_TO_DICTIONARY)
 
         elif choice == '3':
-            pass
-            # admin.run()
+            admin.start_admin_panel()
         elif choice == 'q':
             exit(0)
 
