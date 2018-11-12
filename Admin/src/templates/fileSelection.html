@@ -1,20 +1,25 @@
 {% extends "facebookRequired.html" %}
 {% block title %}English Subtitled Admin: Choose file{% endblock %}
 {% block content %}
-Wybierz plik pośredni lekcji, nad którą chcesz pracować:
+<h2>Wybór pliku</h2>
+<p>Wybierz plik pośredni lekcji, nad którą chcesz pracować:</p>
 <form action="/worksheet" method="post">
-    <select name="File" class="form-control" >
-        <optgroup label="Nieprzetworzone">
-            {% for formatted,filename in folder_content.items() %}
-            <option value="{{filename}}">{{formatted}}</option>
-            {% endfor %}
-        </optgroup>
-        <optgroup label="Archiwum">
-            {% for formatted,filename in archive_content.items() %}
-            <option value="{{filename}}">{{formatted}}</option>
-            {% endfor %}
-        </optgroup>
-    </select>
-    <input type="submit" value="Dalej" class="btn btn-primary" />
+    <div class="input-group mb-3">
+        <select name="File" class="form-control form-control-lg" >
+            <optgroup label="Nieprzetworzone">
+                {% for formatted,filename in folder_content.items() %}
+                <option value="{{filename}}">{{formatted}}</option>
+                {% endfor %}
+            </optgroup>
+            <optgroup label="Archiwum">
+                {% for formatted,filename in archive_content.items() %}
+                <option value="{{filename}}">{{formatted}}</option>
+                {% endfor %}
+            </optgroup>
+        </select>
+        <div class="input-group-append">
+            <input type="submit" value="Dalej" class="btn btn-dark" style="padding-left: 25px; padding-right: 25px;" />
+        </div>
+    </div>
 </form>
 {% endblock %}
