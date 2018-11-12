@@ -11,16 +11,18 @@ Tytuł lekcji <input type="text" name="lesson_title" value="{{title}}" />
             <th scope="col">Polski</th>
             <th scope="col">Kontekst</th>
             <th scope="col">Propozycje</th>
+            <th scope="col">Uwzględnij</th>
         </tr>
     </thead>
     <tbody>
         {% for word in words %}
         {% set index = loop.index0 %}
         <tr>
-            <td>{{word[0]}}</td>
-            <td><input id="t{{index}}" name="{{word[0]}}" type="text" value="{{word[2]}}"></td>
+            <td>{{word[0]}} <input type="hidden" name="{{index}}_eng" value="{{word[0]}}" /></td>
+            <td><input id="t{{index}}" name="{{index}}_pl" type="text" value="{{word[2]}}"></td>
             <td>{{word[1].split(word[0])[0]}}<b>{{word[0]}}</b>{{word[1].split(word[0])[1]}}</td>
             <td>{% for suggestion in word[2:] %}<input type="button" value="{{suggestion}}" onClick="$('#t{{index}}').val('{{suggestion}}');"/>{% endfor %}</td>
+            <td><input type="checkbox" name="{{index}}_apply" checked /></td>
         </tr>
         {% endfor %}
     </tbody>
