@@ -3,8 +3,9 @@ from WordAnalysis import translator, tfidf, llr
 from WordAnalysis.utils import *
 import math
 
-NUMBER_OF_WORDS = 30
+MAX_NUMBER_OF_WORDS_PER_FILM = 30
 MAX_NUMBER_OF_WORDS_PER_LESSON = 10
+MIN_NUMBER_OF_WORDS_PER_FILM = 8
 WORD_IMPORTANCE = 90000
 
 
@@ -49,8 +50,8 @@ def write_to_file_most_valuable_words(result, title, output_dir, dictionary_path
     word, tag, example, value = result[index]
     parsed_result = []
 
-    while ((value > WORD_IMPORTANCE or translated_words > NUMBER_OF_WORDS)
-           and translated_words < NUMBER_OF_WORDS and index < len(result)):
+    while ((value > WORD_IMPORTANCE or translated_words < MIN_NUMBER_OF_WORDS_PER_FILM)
+           and translated_words < MAX_NUMBER_OF_WORDS_PER_FILM and index < len(result)):
         word, tag, example, value = result[index]
         index += 1
         if word[0].isupper():
