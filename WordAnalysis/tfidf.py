@@ -31,7 +31,7 @@ def analysis_words_from_film(title, input_dir):
             if is_film_contains_word(title, word, tag, input_dir):
                 count_films_with_word += 1
 
-        tfidf_number.append(tfidf(count_word_in_film, number_of_words_in_film, count_films_with_word))
+        tfidf_number.append(tfidf(count_word_in_film, number_of_words_in_film, count_films_with_word, input_dir))
 
     return tfidf_number
 

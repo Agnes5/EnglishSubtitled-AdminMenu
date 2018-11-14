@@ -52,7 +52,7 @@ def menu():
 
             parse_subtitles(path_to_subtitles, title, PATH_TO_PARSED_FILMS)
 
-        elif choice == '1b':
+        elif choice == '1a':
             path_to_subtitles = input('Podaj ścieżkę do folderu z plikami z napisami: ')
             create_again = input('Czy nadpisywać pliki wynikowe jeśli będzie taka potrzeba? [Y/n]')
 
@@ -62,8 +62,8 @@ def menu():
                 if Path('{}{}.csv'.format(PATH_TO_PARSED_FILMS, title)).is_file():
                     if create_again == 'n':
                         continue
-
-                parse_subtitles(path_to_subtitles, title, PATH_TO_PARSED_FILMS)
+                print('...trwa przetwarzanie napisów z filmu: {}'.format(title))
+                parse_subtitles(path_to_subtitles + file, title, PATH_TO_PARSED_FILMS)
 
         elif choice == '2':
             print('Film będzie analizowany na podstawie filmów znajdujących się w folderze {}'
@@ -71,7 +71,7 @@ def menu():
 
             title = input('Podaj tytuł filmu: ')
 
-            if Path('{}{}.csv'.format(PATH_TO_DIR_WITH_RESULTS, title)).is_file():
+            if Path('{}{}1.csv'.format(PATH_TO_DIR_WITH_RESULTS, title)).is_file():
                 create_again = input('Plik z wynikami analizy tego filmu już istnieje, '
                                      'czy na pewno chcesz nadpisać już istniejący plik? [Y/n] ')
                 if create_again == 'n':
@@ -79,7 +79,7 @@ def menu():
 
             analyse(title, PATH_TO_PARSED_FILMS, PATH_TO_DIR_WITH_RESULTS, PATH_TO_DICTIONARY)
 
-        elif choice == '2b':
+        elif choice == '2a':
             print('Filmy będą analizowane na podstawie filmów znajdujących się w folderze {}'
                   .format(PATH_TO_PARSED_FILMS))
             create_again = input('Czy nadpisywać pliki wynikowe jeśli będzie taka potrzeba? [Y/n]')
@@ -89,7 +89,7 @@ def menu():
                     if create_again == 'n':
                         continue
 
-                analyse(file.split('.')[0], PATH_TO_PARSED_FILMS, PATH_TO_DIR_WITH_RESULTS, PATH_TO_DICTIONARY)
+                analyse(file.replace('.csv', ''), PATH_TO_PARSED_FILMS, PATH_TO_DIR_WITH_RESULTS, PATH_TO_DICTIONARY)
 
         elif choice == '3':
             admin.start_admin_panel()
@@ -104,7 +104,7 @@ def menu():
 
 def title_from_path(path):
     filename = path.split('/')[-1]
-    title = filename.split('.')[0]
+    title = filename.replace('.srt', '')
     return title
 
 

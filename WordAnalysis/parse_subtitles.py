@@ -32,11 +32,15 @@ def parse_subtitles_to_sentences(file):
     text = re.sub(r'\n\n', '\n', text)
 
     # remove html tags
-    text = re.sub(r'<[a-zA-Z/]+>', '', text)
+    text = re.sub(r'<[a-zA-Z0-9/]+>', '', text)
+    text = re.sub(r'<[^<]*>', '', text)
+
+    text = re.sub(r'♪', '', text)
+
 
     # remove redundant white spaces
     text = re.sub(r'\n', ' ', text)
-    text = re.sub(r' +', ' ', text).lower()
+    text = re.sub(r' +', ' ', text)
     text = re.sub(r'^ ', '', text)
 
     text = re.sub(r'\ufeff', '', text)  # todo what if in file is other coding
@@ -47,6 +51,8 @@ def parse_subtitles_to_sentences(file):
     text = re.sub(r'\. ', '.\n', text)
     text = re.sub(r'\.\.\. ', '...\n', text)
     sentences = re.split(r'\n', text)
+
+    sentences = [sentence[:1].lower() + sentence[1:] for sentence in sentences]
 
     return sentences
 
