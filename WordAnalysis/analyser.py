@@ -54,7 +54,6 @@ def write_to_file_most_valuable_words(result, title, output_dir, dictionary_path
         word, tag, example, value = result[index]
         index += 1
         if word[0].isupper():
-            print(word)
             continue
         translations = translator.translate_word(word, tag, dictionary_path)
         if translations:
