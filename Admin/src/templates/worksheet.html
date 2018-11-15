@@ -31,7 +31,7 @@
             <td>{{word[0]}} <input type="hidden" name="{{index}}_eng" value="{{word[0]}}" /></td>
             <td><input type="text" id="t{{index}}" name="{{index}}_pl" class="form-control" value="{{word[2]}}"></td>
             <td>{{word[1].split(word[0])[0]}}<b>{{word[0]}}</b>{{word[1].split(word[0])[1]}}</td>
-            <td>{% for suggestion in word[2:] %}<input type="button" class="btn btn-sm btn-secondary" value="{{suggestion}}" onClick="$('#t{{index}}').val('{{suggestion}}');"/> {% endfor %}</td>
+            <td>{% for suggestion in word[2:] %}<input type="button" class="btn btn-sm btn-secondary" style="margin: 2px" value="{{suggestion}}" onClick="$('#t{{index}}').val('{{suggestion}}');"/>{% endfor %}</td>
             <td><input type="checkbox" class="form-control" name="{{index}}_apply" checked /></td>
         </tr>
         {% endfor %}
