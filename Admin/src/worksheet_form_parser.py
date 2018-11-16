@@ -5,7 +5,6 @@ import re
 class WorksheetFormParser:
     eng_word = "engWord"
     pl_word = "plWord"
-    reserved_keys = ["facebook_field", "film_title", "lesson_title", "file_name"]
     eng_word_regex = re.compile("(\d+)_eng")
     apply_suffix = "_apply"
     pl_suffix = "_pl"

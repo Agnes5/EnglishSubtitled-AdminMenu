@@ -7,13 +7,13 @@
     <div class="input-group mb-3">
         <select name="File" class="form-control form-control-lg" >
             <optgroup label="Nieprzetworzone">
-                {% for formatted,filename in folder_content.items() %}
-                <option value="{{filename}}">{{formatted}}</option>
+                {% for entry in folder_content | dictsort %}
+                <option value="{{entry[1]}}">{{entry[0]}}</option>
                 {% endfor %}
             </optgroup>
             <optgroup label="Archiwum">
-                {% for formatted,filename in archive_content.items() %}
-                <option value="{{filename}}">{{formatted}}</option>
+                {% for entry in archive_content | dictsort %}
+                <option value="{{entry[1]}}">{{entry[0]}}</option>
                 {% endfor %}
             </optgroup>
         </select>
