@@ -42,7 +42,7 @@ def parse_subtitles_to_sentences(file):
     text = re.sub(r' +', ' ', text)
     text = re.sub(r'^ ', '', text)
 
-    text = re.sub(r'\ufeff', '', text)  # todo what if in file is other coding
+    text = re.sub(r'\ufeff', '', text)
 
     # split text to sentence
     text = re.sub(r'\? ', '?\n', text)

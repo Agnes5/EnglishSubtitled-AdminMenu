@@ -44,6 +44,27 @@ def map_result_number_to_words(file_with_words_from_film, result):
 
 
 def write_to_file_most_valuable_words(result, title, output_dir, dictionary_path):
+    parsed_result = choose_most_valuable_words(result, dictionary_path)
+
+    number_of_words = len(parsed_result)
+    number_of_lessons = int(math.ceil(number_of_words / MAX_NUMBER_OF_WORDS_PER_LESSON))
+    number_of_word_per_lesson = int(number_of_words / number_of_lessons)
+    rest_of_words = number_of_words % number_of_lessons
+
+    result_files = []
+    for i in range(1, number_of_lessons + 1):
+        result_files.append(open_nested_file(output_dir, '{}{}.csv'.format(title, i)))
+
+    for lesson_number in range(number_of_lessons):
+        number_of_words_for_lesson = number_of_word_per_lesson
+        if rest_of_words > 0:
+            number_of_words_for_lesson += 1
+            rest_of_words -= 1
+        for word in range(number_of_words_for_lesson):
+            result_files[lesson_number].write(parsed_result.pop())
+
+
+def choose_most_valuable_words(result, dictionary_path):
     translated_words = 0
     index = 0
     word, tag, example, value = result[index]
@@ -63,22 +84,7 @@ def write_to_file_most_valuable_words(result, title, output_dir, dictionary_path
             parsed_result.append('"{}";"{}";{}\n'.format(word, example, translations))
             translated_words += 1
 
-    number_of_words = len(parsed_result)
-    number_of_lessons = int(math.ceil(number_of_words / MAX_NUMBER_OF_WORDS_PER_LESSON))
-    number_of_word_per_lesson = int(number_of_words / number_of_lessons)
-    rest_of_words = number_of_words % number_of_lessons
-
-    result_files = []
-    for i in range(1, number_of_lessons + 1):
-        result_files.append(open_nested_file(output_dir, '{}{}.csv'.format(title, i)))
-
-    for lesson_number in range(number_of_lessons):
-        number_of_words_for_lesson = number_of_word_per_lesson
-        if rest_of_words > 0:
-            number_of_words_for_lesson += 1
-            rest_of_words -= 1
-        for word in range(number_of_words_for_lesson):
-            result_files[lesson_number].write(parsed_result.pop())
+    return parsed_result
 
 
 def change_format_translations(translations):
