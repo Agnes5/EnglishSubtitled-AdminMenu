@@ -2,7 +2,6 @@ import re
 import nltk
 import nltk.corpus as nc
 from nltk.stem.wordnet import WordNetLemmatizer
-import os
 from WordAnalysis.utils import *
 
 
