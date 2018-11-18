@@ -2,8 +2,8 @@ from WordAnalysis.analyser import analyse
 from WordAnalysis.parse_subtitles import parse_subtitles
 from WordAnalysis.parse_xml_to_json import parse_xml_to_json
 from pathlib import Path
-import os
 from Admin import admin
+from WordAnalysis.utils import *
 
 DEFAULT_PATH_TO_XML = './plwordnet-4.0-visdisc.xml'
 PATH_TO_DICTIONARY = 'dictionary.json'
@@ -84,12 +84,22 @@ def menu():
                   .format(PATH_TO_PARSED_FILMS))
             create_again = input('Czy nadpisywać pliki wynikowe jeśli będzie taka potrzeba? [Y/n]')
 
+            parsed_films = []
             for file in os.listdir(PATH_TO_PARSED_FILMS):
-                if Path(PATH_TO_DIR_WITH_RESULTS + file).is_file():
-                    if create_again == 'n':
+                parsed_films.append(open_file(PATH_TO_PARSED_FILMS + file).readlines())
+
+            parsed_films.append(open_file(PATH_TO_PARSED_FILMS + 'Fiddler.On.The.Roof.1971.1080p.BluRay.x264-.YTS.AG.csv'))
+            for file in os.listdir(PATH_TO_PARSED_FILMS):
+                filename_without_extension = file.split('.')[:-1]
+                extension = file.split('.')[-1:]
+                filename_without_extension[len(filename_without_extension) - 1] += '1'
+                filename = '.'.join(filename_without_extension + extension)
+                if Path(PATH_TO_DIR_WITH_RESULTS + filename).is_file():
+                    if create_again.startswith('n'):
                         continue
 
-                analyse(file.replace('.csv', ''), PATH_TO_PARSED_FILMS, PATH_TO_DIR_WITH_RESULTS, PATH_TO_DICTIONARY)
+                analyse(file.replace('.csv', ''), PATH_TO_PARSED_FILMS, PATH_TO_DIR_WITH_RESULTS,
+                        PATH_TO_DICTIONARY, parsed_films)
 
         elif choice == '3':
             admin.start_admin_panel()

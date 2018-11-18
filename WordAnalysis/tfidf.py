@@ -5,7 +5,7 @@ import math
 from WordAnalysis.utils import open_file
 
 
-def analysis_words_from_film(title, input_dir):
+def analysis_words_from_film(title, input_dir, parsed_films):
     translated_film = open_file('{}{}.csv'.format(input_dir, title))
 
     tfidf_number = []
@@ -27,8 +27,8 @@ def analysis_words_from_film(title, input_dir):
         count_word_in_film = int(line[2])
 
         count_films_with_word = 0
-        for title in os.listdir(input_dir):
-            if is_film_contains_word(title, word, tag, input_dir):
+        for title in parsed_films:
+            if is_film_contains_word(title, word, tag):
                 count_films_with_word += 1
 
         tfidf_number.append(tfidf(count_word_in_film, number_of_words_in_film, count_films_with_word, input_dir))
@@ -52,12 +52,8 @@ def count_films(input_dir):
     return len(os.listdir(input_dir))
 
 
-def is_film_contains_word(film, word, tag, input_dir):
-    filename = input_dir + film
-    translated_film = open_file(filename)
-
-    translations = translated_film.readlines()
-    for line in translations:
+def is_film_contains_word(film, word, tag):
+    for line in film:
         if re.split('#', line)[0] == word and re.split('#', line)[1] == tag:
             return True
     return False

@@ -3,17 +3,17 @@ from WordAnalysis import translator, tfidf, llr
 from WordAnalysis.utils import *
 import math
 
-MAX_NUMBER_OF_WORDS_PER_FILM = 30
+MAX_NUMBER_OF_WORDS_PER_FILM = 50
 MAX_NUMBER_OF_WORDS_PER_LESSON = 10
 MIN_NUMBER_OF_WORDS_PER_FILM = 8
 WORD_IMPORTANCE = 90000
 
 
-def analyse(title, input_dir, output_dir, dictionary_path, method=1):
+def analyse(title, input_dir, output_dir, dictionary_path, parsed_films, method=1):
     print('...trwa analiza filmu: {}'.format(title))
 
     if method == 1:
-        result = tfidf.analysis_words_from_film(title, input_dir)
+        result = tfidf.analysis_words_from_film(title, input_dir, parsed_films)
     else:
         result = llr.analysis_words_from_film(title, input_dir)
 
@@ -22,7 +22,6 @@ def analyse(title, input_dir, output_dir, dictionary_path, method=1):
     file_with_words_from_film = open_file(input_dir + filename)
 
     result_with_words = map_result_number_to_words(file_with_words_from_film, result)
-
     write_to_file_most_valuable_words(result_with_words, title, output_dir, dictionary_path)
 
 
@@ -61,7 +60,6 @@ def write_to_file_most_valuable_words(result, title, output_dir, dictionary_path
             translations = change_format_translations(translations)
 
             example = example[:1].upper() + example[1:]
-
             parsed_result.append('"{}";"{}";{}\n'.format(word, example, translations))
             translated_words += 1
 
