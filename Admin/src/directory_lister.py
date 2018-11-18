@@ -4,8 +4,8 @@ from .constants import ARCHIVE_FOLDER_NAME
 
 
 class DirectoryLister:
-    extension = re.compile("\..*")
-    underscore = re.compile("_")
+    extension = re.compile("\.[a-zA-Z0-9]+$")
+    whitespace_equivalents = re.compile("[_.]")
 
     def __init__(self, directory, root_folder):
         self.directory = directory
@@ -29,5 +29,5 @@ class DirectoryLister:
     @staticmethod
     def format_filename(filename):
         formatted = DirectoryLister.extension.sub(repl="", string=filename)
-        formatted = DirectoryLister.underscore.sub(repl=" ", string=formatted)
+        formatted = DirectoryLister.whitespace_equivalents.sub(repl=" ", string=formatted)
         return formatted

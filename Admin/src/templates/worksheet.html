@@ -2,8 +2,18 @@
 {% block title %}English Subtitled Admin: Worksheet{% endblock %}
 {% block content %}
 <form id="worksheet" action="/upload_lesson" method="post">
-Tytuł filmu <input type="text" name="film_title" value="{{title}}" />
-Tytuł lekcji <input type="text" name="lesson_title" value="{{title}}" />
+
+<table class="table table-sm table-bordered" style="width: 60%">
+    <tr class="thead-dark">
+        <th scope="row">Tytuł filmu</th>
+        <td><input type="text" class="form-control" name="film_title" value="{{title}}" style="width: 100%;" /></td>
+    </tr>
+    <tr class="thead-dark">
+        <th scope="row">Tytuł lekcji</th>
+        <td><input type="text" class="form-control" name="lesson_title" value="{{title}}" style="width: 100%;" /></td>
+    </tr>
+</table>
+
 <table class="table">
     <thead class="thead-dark">
         <tr>
@@ -11,23 +21,25 @@ Tytuł lekcji <input type="text" name="lesson_title" value="{{title}}" />
             <th scope="col">Polski</th>
             <th scope="col">Kontekst</th>
             <th scope="col">Propozycje</th>
+            <th scope="col">Uwzględnij</th>
         </tr>
     </thead>
     <tbody>
         {% for word in words %}
         {% set index = loop.index0 %}
         <tr>
-            <td>{{word[0]}}</td>
-            <td><input id="t{{index}}" name="{{word[0]}}" type="text" value="{{word[2]}}"></td>
-            <td>{{word[1].split(word[0])[0]}}<b>{{word[0]}}</b>{{word[1].split(word[0])[1]}}</td>
-            <td>{% for suggestion in word[2:] %}<input type="button" value="{{suggestion}}" onClick="$('#t{{index}}').val('{{suggestion}}');"/>{% endfor %}</td>
+            <td>{{word[0]}} <input type="hidden" name="{{index}}_eng" value="{{word[0]}}" /></td>
+            <td><input type="text" id="t{{index}}" name="{{index}}_pl" class="form-control" value="{{word[2]}}"></td>
+            <td>{{word[1].split(word[0])[0]}}<b>{{word[0] if word[0] in word[1]}}</b>{{word[1].split(word[0])[1]}}</td>
+            <td>{% for suggestion in word[2:] %}<input type="button" class="btn btn-sm btn-secondary" style="margin: 2px" value="{{suggestion}}" onClick="$('#t{{index}}').val('{{suggestion}}');"/>{% endfor %}</td>
+            <td><input type="checkbox" class="form-control" name="{{index}}_apply" checked /></td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 <input type="hidden" id="facebook_field" name="facebook_field" />
 <input type="hidden" name="file_name" value="{{filename}}" />
-<input type="submit" />
+<input class="btn btn-dark" style="margin: 5px" type="submit" value="Wyślij" />
 </form>
 <script>
     $('#worksheet').submit(function() {
