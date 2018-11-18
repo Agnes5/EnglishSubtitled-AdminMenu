@@ -18,7 +18,7 @@ def menu():
         print('1a. Przetwórz napisy z wielu filmów')
         print('2. Przeanalizuj film')
         print('2a. Przeanalizuj wszystkie przetworzone filmy')
-        print('3. Zarządzaj tłumaczeniami')
+        print('3. Otwórz webowy panel administratora służący do edycji i wysyłania wczęśniej przetworzonych lekcji')
         print('q. Wyjdź')
         print()
 
@@ -28,7 +28,10 @@ def menu():
             if Path(PATH_TO_DICTIONARY).is_file():
                 create_again = input('Plik json ze słownikiem już istnieje, '
                                      'czy na pewno chcesz nadpisać już istniejący plik? [Y/n] ')
-                if create_again == 'n':
+                if create_again.lower() == 'n':
+                    continue
+                elif create_again.lower() != 'y':
+                    print('Nie poprawna odpowiedź')
                     continue
             path_to_xml = input('Podaj ścieżkę do pliku xml ze słowosiecią (domyślnie: {}): '
                                  .format(DEFAULT_PATH_TO_XML))
@@ -47,7 +50,10 @@ def menu():
             if Path('{}{}.csv'.format(PATH_TO_PARSED_FILMS, title)).is_file():
                 create_again = input('Plik z przetworzonymi napisami już istnieje, '
                                      'czy na pewno chcesz nadpisać już istniejący plik? [Y/n] ')
-                if create_again == 'n':
+                if create_again.lower() == 'n':
+                    continue
+                elif create_again.lower() != 'y':
+                    print('Nie poprawna odpowiedź')
                     continue
 
             parse_subtitles(path_to_subtitles, title, PATH_TO_PARSED_FILMS)
@@ -55,12 +61,14 @@ def menu():
         elif choice == '1a':
             path_to_subtitles = input('Podaj ścieżkę do folderu z plikami z napisami: ')
             create_again = input('Czy nadpisywać pliki wynikowe jeśli będzie taka potrzeba? [Y/n]')
-
+            if create_again.lower() != 'n' and create_again.lower() != 'y':
+                print('Nie poprawna odpowiedź')
+                continue
             for file in os.listdir(path_to_subtitles):
                 title = title_from_path(file)
 
                 if Path('{}{}.csv'.format(PATH_TO_PARSED_FILMS, title)).is_file():
-                    if create_again == 'n':
+                    if create_again.lower() == 'n':
                         continue
                 print('...trwa przetwarzanie napisów z filmu: {}'.format(title))
                 parse_subtitles(path_to_subtitles + file, title, PATH_TO_PARSED_FILMS)
@@ -74,7 +82,10 @@ def menu():
             if Path('{}{}1.csv'.format(PATH_TO_DIR_WITH_RESULTS, title)).is_file():
                 create_again = input('Plik z wynikami analizy tego filmu już istnieje, '
                                      'czy na pewno chcesz nadpisać już istniejący plik? [Y/n] ')
-                if create_again == 'n':
+                if create_again.lower() == 'n':
+                    continue
+                elif create_again.lower() != 'y':
+                    print('Nie poprawna odpowiedź')
                     continue
 
             analyse(title, PATH_TO_PARSED_FILMS, PATH_TO_DIR_WITH_RESULTS, PATH_TO_DICTIONARY)
@@ -83,12 +94,13 @@ def menu():
             print('Filmy będą analizowane na podstawie filmów znajdujących się w folderze {}'
                   .format(PATH_TO_PARSED_FILMS))
             create_again = input('Czy nadpisywać pliki wynikowe jeśli będzie taka potrzeba? [Y/n]')
-
+            if create_again.lower() != 'n' and create_again.lower() != 'y':
+                print('Nie poprawna odpowiedź')
+                continue
             parsed_films = []
             for file in os.listdir(PATH_TO_PARSED_FILMS):
                 parsed_films.append(open_file(PATH_TO_PARSED_FILMS + file).readlines())
 
-            parsed_films.append(open_file(PATH_TO_PARSED_FILMS + 'Fiddler.On.The.Roof.1971.1080p.BluRay.x264-.YTS.AG.csv'))
             for file in os.listdir(PATH_TO_PARSED_FILMS):
                 filename_without_extension = file.split('.')[:-1]
                 extension = file.split('.')[-1:]

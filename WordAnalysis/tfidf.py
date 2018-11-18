@@ -28,7 +28,7 @@ def analysis_words_from_film(title, input_dir, parsed_films):
 
         count_films_with_word = 0
         for title in parsed_films:
-            if is_film_contains_word(title, word, tag):
+            if does_film_contain_word(title, word, tag):
                 count_films_with_word += 1
 
         tfidf_number.append(tfidf(count_word_in_film, number_of_words_in_film, count_films_with_word, input_dir))
@@ -52,7 +52,7 @@ def count_films(input_dir):
     return len(os.listdir(input_dir))
 
 
-def is_film_contains_word(film, word, tag):
+def does_film_contain_word(film, word, tag):
     for line in film:
         if re.split('#', line)[0] == word and re.split('#', line)[1] == tag:
             return True

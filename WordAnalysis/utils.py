@@ -1,7 +1,7 @@
 import sys
 import os
 import chardet
-
+import pathlib
 
 def open_nested_file(path_to_dir, filename, mode='w'):
     create_dir(path_to_dir)
@@ -10,7 +10,7 @@ def open_nested_file(path_to_dir, filename, mode='w'):
 
 def create_dir(path_to_dir):
     if not os.path.exists(path_to_dir):
-        os.mkdir(path_to_dir)
+        pathlib.Path(path_to_dir).mkdir(parents=True, exist_ok=True)
 
 
 def open_file(path, mode='r'):
