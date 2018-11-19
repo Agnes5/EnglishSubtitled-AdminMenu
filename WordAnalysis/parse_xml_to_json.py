@@ -1,11 +1,13 @@
 import lxml.etree as ET
 import json
-import time
 from tqdm import *
+from WordAnalysis.utils import open_file
 
 
-def parse_xml_to_json():
-    tree = ET.parse('plwordnet-4.0-visdisc.xml')
+def parse_xml_to_json(filename='plwordnet-4.0-visdisc.xml', dictionary_path='dictionary.json'):
+    open_file(filename)
+
+    tree = ET.parse(filename)
     root = tree.getroot()
     parent_map = {child: parent for parent in tree.iter() for child in parent}
 
@@ -56,8 +58,9 @@ def parse_xml_to_json():
             elif relation.text == 'Hipo_plWN-PWN':
                 add_translation_to_dictionary(relation_category[3])
 
-    with open('dictionary.json', 'w') as fp:
+    with open(dictionary_path, 'w') as fp:
         json.dump(dictionary, fp)
 
 
-parse_xml_to_json()
+if __name__ == '__main__':
+    parse_xml_to_json()
