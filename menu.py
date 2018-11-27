@@ -18,7 +18,7 @@ def menu():
         print('1a. Przetwórz napisy z wielu filmów')
         print('2. Przeanalizuj film')
         print('2a. Przeanalizuj wszystkie przetworzone filmy')
-        print('3. Otwórz webowy panel administratora służący do edycji i wysyłania wczęśniej przetworzonych lekcji')
+        print('3. Otwórz webowy panel administratora służący do edycji i wysyłania wcześniej przetworzonych lekcji')
         print('q. Wyjdź')
         print()
 
