@@ -88,7 +88,14 @@ def menu():
                     print('Nie poprawna odpowiedź')
                     continue
 
-            analyse(title, PATH_TO_PARSED_FILMS, PATH_TO_DIR_WITH_RESULTS, PATH_TO_DICTIONARY)
+            parsed_films = []
+            for file in os.listdir(PATH_TO_PARSED_FILMS):
+                parsed_films.append(open_file(PATH_TO_PARSED_FILMS + file).readlines())
+
+            if not Path('./dictionary.json').is_file():
+                print('Nie znaleziono pliku ze słownikiem. Aby stworzyć ten plik należy skorzystać z opcji 0.')
+                continue
+            analyse(title, PATH_TO_PARSED_FILMS, PATH_TO_DIR_WITH_RESULTS, PATH_TO_DICTIONARY, parsed_films)
 
         elif choice == '2a':
             print('Filmy będą analizowane na podstawie filmów znajdujących się w folderze {}'
@@ -109,6 +116,10 @@ def menu():
                 if Path(PATH_TO_DIR_WITH_RESULTS + filename).is_file():
                     if create_again.startswith('n'):
                         continue
+
+                if not Path('./dictionary.json').is_file():
+                    print('Nie znaleziono pliku ze słownikiem. Aby stworzyć ten plik należy skorzystać z opcji 0.')
+                    continue
 
                 analyse(file.replace('.csv', ''), PATH_TO_PARSED_FILMS, PATH_TO_DIR_WITH_RESULTS,
                         PATH_TO_DICTIONARY, parsed_films)
