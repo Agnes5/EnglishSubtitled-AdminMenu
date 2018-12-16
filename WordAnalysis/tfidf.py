@@ -37,7 +37,7 @@ def analysis_words_from_film(title, input_dir, parsed_films):
 
 
 def tf(count_word_in_film, count_all_words_in_film):
-    return count_word_in_film * count_all_words_in_film
+    return count_word_in_film / count_all_words_in_film
 
 
 def idf(count_films_with_word, input_dir):
